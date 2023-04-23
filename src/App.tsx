@@ -1,25 +1,19 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-
+import { Route } from "react-router-dom";
+import BoardListContainer from "./containers/BoardListContainer";
+import BoardRegisterContainer from "./containers/BoardRegisterContainer";
+import BoardModifyContainer from "./containers/BoardModifyContainer";
+import BoardReadContainer from "./containers/BoardReadContainer";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Route component={BoardListContainer} path="/" exact/>
+      <Route component={BoardRegisterContainer} path="/create" />
+      <Route component={BoardModifyContainer} path="/edit/:boardNo" />
+      <Route component={BoardReadContainer} path="/read/:boardNo"/>
+    </>
   );
 }
 
