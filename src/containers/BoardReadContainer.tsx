@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import BoardRead from "../components/BoardRead";
 import * as client from "../lib/api"
-import { RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Board } from "../App";
 
 interface MatchParams {
     boardNo: string;
 }
 
-const BoardReadContainer = ({match}: RouteComponentProps<MatchParams>)=> {
+const BoardReadContainer = ({match, history}: RouteComponentProps<MatchParams>)=> {
 
     const { boardNo } = match.params;
 
@@ -31,11 +31,26 @@ const BoardReadContainer = ({match}: RouteComponentProps<MatchParams>)=> {
         readBoard(boardNo);
     }, [boardNo]);
 
+    const onRemove = async () => {
+        console.log("boardNo =" + boardNo)
+
+        try{
+            await client.removeBoard(boardNo);
+
+            alert('삭제되었습니다.');
+
+            history.push("/");
+        }catch (e) {
+            console.log(e)
+        }
+    }
+
     return <BoardRead
         boardNo={boardNo}
         board={board}
         isLoading={isLoading}
+        onRemove={onRemove}
     />
 }
 
-export default BoardReadContainer;
+export default withRouter(BoardReadContainer);
