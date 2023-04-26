@@ -77,7 +77,7 @@ const board = createReducer(initialState,
                 ...state.loading,
                 FETCH_LIST: false
             },
-            board: action.payload
+            boards: action.payload
         }),
         [FETCH_LIST_FAILURE]: (state) => ({
             ...state,
