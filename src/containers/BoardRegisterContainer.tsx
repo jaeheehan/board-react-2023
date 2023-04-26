@@ -9,7 +9,9 @@ const BoardRegisterContainer = ({history}: RouteComponentProps) => {
         try{
             const response = await client.registerBoard(title, content, writer);
 
-            alert('등록되었습니다.')
+            alert('등록되었습니다.');
+
+            history.push('/read/' + response.data.boardNo)
 
         }catch (e) {
             console.log(e);
