@@ -5,11 +5,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 
+import { createStore } from "redux";
+import { Provider } from "react-redux";
+import board from "./modules/board"
+import { composeWithDevTools } from "redux-devtools-extension";
+
+const store = createStore(board, composeWithDevTools());
+
+// @ts-ignore
+const myRouter = <BrowserRouter>
+    <App />
+</BrowserRouter>
+
 ReactDOM.render(
-    // @ts-ignore
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
+    <Provider store={store}>
+        {myRouter}
+    </Provider>,
     document.getElementById('root')
 );
 

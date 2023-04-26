@@ -8,5 +8,6 @@ export const removeBoard = (boardNo: string) => axios.delete(`/boards/${boardNo}
 export const modifyBoard = (boardNo: string, title: string, content: string) =>
     axios.put(`/boards/${boardNo}`, {title, content});
 
+export const fetchBoardApi = (boardNo: string) => axios.get(`/boards/${boardNo}`);
 
 
