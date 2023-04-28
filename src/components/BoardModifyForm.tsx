@@ -8,42 +8,28 @@ interface Props {
     readonly board?:Board;
     readonly isLoading: boolean;
     readonly onModify: (boardNo: string, title: string, content: string) => void;
+    readonly onChangeTitle: (title: string)=>void;
+    readonly onChangeContent: (content: string)=>void;
 }
 
 
-function BoardModifyForm({board, isLoading, onModify}: Props){
-
-    const [title, setTitle] = useState("");
-    const [content, setContent] = useState("");
+function BoardModifyForm({board, isLoading, onChangeTitle, onChangeContent, onModify}: Props){
 
     const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTitle(e.target.value);
+        onChangeTitle(e.target.value);
     };
 
     const handleChangeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setContent(e.target.value);
+        onChangeContent(e.target.value);
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if(!!board){
-            onModify(board.boardNo, title, content);
+            onModify(board.boardNo, board.title, board.content);
         }
     }
-
-    useEffect(()=>{
-        console.log("useEffect board =" + board);
-
-        if(board){
-            console.log("board.title" + board.title);
-            console.log("board.content" + board.content);
-
-            setTitle(board.title)
-            setContent(board.content)
-        }
-    }, [board])
-
 
     return (
         <div className={styles.centered}>
@@ -69,7 +55,7 @@ function BoardModifyForm({board, isLoading, onModify}: Props){
                             <tr>
                                 <td>제목</td>
                                 <td>
-                                    <input type="text" value={title} onChange={handleChangeTitle}/>
+                                    <input type="text" value={board.title} onChange={handleChangeTitle}/>
                                 </td>
                             </tr>
                             <tr>
@@ -81,7 +67,7 @@ function BoardModifyForm({board, isLoading, onModify}: Props){
                             <tr>
                                 <td>내용</td>
                                 <td>
-                                    <textarea value={content} rows={5} onChange={handleChangeContent}></textarea>
+                                    <textarea value={board.content} rows={5} onChange={handleChangeContent}></textarea>
                                 </td>
                             </tr>
                             </tbody>

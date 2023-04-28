@@ -4,6 +4,7 @@ import BoardRead from "../components/BoardRead";
 import * as client from "../lib/api"
 import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Board } from "../App";
+import { removeBoardApi } from "../lib/api";
 
 import {
     fetchStart,
@@ -49,7 +50,7 @@ const BoardReadContainer = ({match, history}: RouteComponentProps<MatchParams>)=
         console.log("boardNo =" + boardNo)
 
         try{
-            await client.removeBoard(boardNo);
+            await removeBoardApi(boardNo);
 
             alert('삭제되었습니다.');
 

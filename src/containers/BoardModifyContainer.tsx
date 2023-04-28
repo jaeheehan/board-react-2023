@@ -1,9 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router-dom";
+import React, { useState, useEffect, useCallback } from "react";
 import BoardModifyForm from "../components/BoardModifyForm";
 import * as client from "../lib/api";
-import { RouteComponentProps } from "react-router-dom";
+import { withRouter, RouteComponentProps } from "react-router-dom";
 import { Board } from "../App";
+import { modifyBoardApi, fetchBoardApi } from "../lib/api";
+
+import {
+    changeTitle,
+    changeContent,
+    fetchStart,
+    fetchSuccess,
+    fetchFailure
+} from "../modules/board";
+
+import { BoardState } from "../modules/board";
+import {useDispatch, useSelector} from "react-redux";
 
 interface MatchParams {
     boardNo: string;
@@ -13,12 +24,28 @@ const BoardModifyContainer = ({ match, history}: RouteComponentProps<MatchParams
 
     const { boardNo } = match.params;
 
-    const [board, setBoard] = useState<Board>();
-    const [isLoading, setLoading] = useState(false);
+    const dispatch = useDispatch();
+
+    const { board, isLoading } = useSelector((state: BoardState)=>({
+        board: state.board,
+        isLoading: state.loading.FETCH
+    }))
+
+    const readBoard = useCallback(async (boardNo: string) => {
+        dispatch(fetchStart())
+        try{
+            const response = await fetchBoardApi(boardNo);
+
+            dispatch(fetchSuccess(response.data))
+        }catch (e) {
+            dispatch(fetchFailure(e));
+            throw e;
+        }
+    }, [dispatch]);
 
     const onModify = async (boardNo: string, title: string, content: string) => {
         try{
-            await client.modifyBoard(boardNo, title, content);
+            await modifyBoardApi(boardNo, title, content);
 
             alert('수정되었습니다.');
 
@@ -28,26 +55,28 @@ const BoardModifyContainer = ({ match, history}: RouteComponentProps<MatchParams
         }
     }
 
-    const readBoard = async (boardNo: string) => {
-        setLoading(true);
-        try{
-            const response = await client.fetchBoard(boardNo);
+    const onChangeTitle = useCallback(
+        (title) => {
+            return dispatch(changeTitle(title));
+        },
+        [dispatch]
+    )
 
-            setBoard(response.data);
-
-            setLoading(false);
-        }catch (e) {
-            throw e;
-        }
-    };
+    const onChangeContent = useCallback(
+        (content)=>{
+            return dispatch(changeContent(content))
+        }, [dispatch]
+    )
 
     useEffect(()=> {
         readBoard(boardNo);
-    }, [boardNo]);
+    }, [boardNo, readBoard]);
 
     return <BoardModifyForm
         board={board}
         isLoading={isLoading}
+        onChangeTitle={onChangeTitle}
+        onChangeContent={onChangeContent}
         onModify={onModify}
     />
 }
