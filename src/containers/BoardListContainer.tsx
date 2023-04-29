@@ -1,36 +1,37 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import BoardList from "../components/BoardList";
-import * as client from "../lib/api"
-import { Board } from "../App"
 
 import {
-    fetchListStart,
     fetchListSuccess,
     fetchListFailure
 } from "../modules/board";
 
 import { fetchBoardListApi } from "../lib/api";
 
-import { BoardState } from "../modules/board";
+import { RootState } from "../modules";
+import {endLoading, startLoading} from "../modules/loading";
 
 const BoardListContainer = () => {
 
     const dispatch = useDispatch();
 
-    const { boards, isLoading }= useSelector((state: BoardState) => ({
-       boards: state.boards,
-       isLoading: state.loading.FETCH_LIST
+    const { boards, isLoading }= useSelector(({board, loading}: RootState) => ({
+       boards: board.boards,
+       isLoading: loading.FETCH_LIST
     }));
 
     const listBoard = useCallback(async () => {
-        dispatch(fetchListStart())
+        dispatch(startLoading("FETCH_LIST"))
         try{
-            const response = await client.fetchBoardListApi();
+            const response = await fetchBoardListApi();
 
             dispatch(fetchListSuccess(response.data))
+
+            dispatch(endLoading("FETCH_LIST"));
         }catch (e){
             dispatch(fetchListFailure(e));
+            dispatch(endLoading("FETCH_LIST"));
             throw e;
         }
     }, [dispatch]);

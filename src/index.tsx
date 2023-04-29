@@ -7,10 +7,11 @@ import {BrowserRouter} from "react-router-dom";
 
 import { createStore } from "redux";
 import { Provider } from "react-redux";
-import board from "./modules/board"
 import { composeWithDevTools } from "redux-devtools-extension";
 
-const store = createStore(board, composeWithDevTools());
+import rootReducer from "./modules";
+
+const store = createStore(rootReducer, composeWithDevTools());
 
 // @ts-ignore
 const myRouter = <BrowserRouter>

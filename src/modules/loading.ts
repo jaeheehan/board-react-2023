@@ -15,11 +15,13 @@ export const endLoading = createAction(
 );
 
 export interface LoadingState {
-    //...
+    FETCH: boolean;
+    FETCH_LIST: boolean;
 }
 
 const initialState: LoadingState = {
-    //...
+    FETCH: false,
+    FETCH_LIST: false
 }
 
 const loading = createReducer(
